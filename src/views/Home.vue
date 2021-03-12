@@ -1,37 +1,17 @@
 <template>
-<b-container class="mt5" >
-<h1 class="mb-5" >SQL Editor using vuejs</h1>
-<img v-show="false" src="https://cdn.immobiliere-essaouira.com/media/cache/large_nostamp/uploads/media/files/immobiliere-essaouira-2.webp" alt="">
-  <b-navbar toggleable="lg" >
-      <b-button class=" ml-10 button-top" variant="outline-secondary">Success</b-button>
-      <b-button class="ml-10 button-top" variant="outline-secondary">Info</b-button>
-      <b-button class="ml-10 button-top" variant="outline-secondary">Warning</b-button>
-    
-    <b-button squared variant="outline-secondary"
->
-  save
-</b-button>
-<b-button squared variant="outline-secondary"
->
-  clear
-</b-button>
-<b-button squared variant="outline-secondary"
->
-  copy
-</b-button>
-<b-button squared variant="outline-secondary"
->
-  help
-</b-button>
-  </b-navbar>
-<SqlEditor />
-<b-button @click="startLoading()" squared variant="outline-secondary"
+<b-container class="pt-5" >
+<SqlEditor :code="code" />
+<b-button @click="startLoading()" class="button-top folat-left" squared variant="outline-secondary"
 >
  <b-icon icon="play-fill"></b-icon> Run query
 </b-button>
-<div class="d-flex align-items-center mb-3">
-      <b-progress class="w-100" :max="maxLoadingTime" height="1.5rem">
-        <b-progress-bar :value="loadingTime" :label="`${((loadingTime / maxLoadingTime) * 100).toFixed(2)}%`"></b-progress-bar>
+<b-button @click="clean()" class="button-top folat-left" squared variant="outline-secondary"
+>
+ <b-icon icon="trash-fill"></b-icon> clean
+</b-button>
+<div  class="d-flex align-items-center mb-3">
+      <b-progress v-show="loading" class="w-100" :max="maxLoadingTime" height="0.2rem">
+        <b-progress-bar :value="loadingTime" ></b-progress-bar>
       </b-progress>
     </div>
 <b-skeleton-wrapper :loading="loading">
@@ -43,26 +23,31 @@
         </b-card>
       </template>
 
-      <b-table striped hover :items="items"></b-table>
+      <b-table  striped hover :items="items"></b-table>
     </b-skeleton-wrapper>
 </b-container>
 </template>
 
 <script>
 import SqlEditor from '../components/SqlEditor'
+  import dedent from 'dedent'
 export default {
   name: 'Home',
   data() {
       return {
-        items: [
-          { age: 40, first_name: 'Dickerson', last_name: 'Macdonald' },
-          { age: 21, first_name: 'Larsen', last_name: 'Shaw' },
-          { age: 89, first_name: 'Geneva', last_name: 'Wilson' },
-          { age: 38, first_name: 'Jami', last_name: 'Carney' }
-        ],
+        items: [],
         loading: false,
         loadingTime: 0,
-        maxLoadingTime: 3
+        maxLoadingTime: 3,
+        code: dedent`
+          -- SQL Mode for CodeMirror
+          SELECT * from TableX
+            -- space needed after '--'
+            # 1 line comment
+            /* multiline
+            comment! */
+            LIMIT 1 OFFSET 0;
+        `,
       }
     },
   components:{
@@ -91,9 +76,6 @@ export default {
     created() {
       this.$_loadingTimeInterval = null
     },
-    mounted() {
-      this.startLoading()
-    },
     methods: {
       clearLoadingTimeInterval() {
         clearInterval(this.$_loadingTimeInterval)
@@ -102,12 +84,23 @@ export default {
       startLoading() {
         this.loading = true
         this.loadingTime = 0
+        this.items=[
+          { age: 40, first_name: 'Dickerson', last_name: 'Macdonald' },
+          { age: 21, first_name: 'Larsen', last_name: 'Shaw' },
+          { age: 89, first_name: 'Geneva', last_name: 'Wilson' },
+          { age: 38, first_name: 'Jami', last_name: 'Carney' }
+        ]
+      },
+      clean() {
+        this.code = ''
+         this.loading = false
+         this.items=[]
       }
     }
 }
 </script>
 <style scoped>
 .button-top{
-  width: 100px;
+border: none;  
 }
 </style>
