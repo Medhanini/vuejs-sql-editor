@@ -1,6 +1,7 @@
 <template>
 <b-container class="mt5" >
 <h1 class="mb-5" >SQL Editor using vuejs</h1>
+<img v-show="false" src="https://cdn.immobiliere-essaouira.com/media/cache/large_nostamp/uploads/media/files/immobiliere-essaouira-2.webp" alt="">
   <b-navbar toggleable="lg" >
       <b-button class=" ml-10 button-top" variant="outline-secondary">Success</b-button>
       <b-button class="ml-10 button-top" variant="outline-secondary">Info</b-button>
